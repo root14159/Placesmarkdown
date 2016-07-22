@@ -1,6 +1,9 @@
 package athreya.amrnath.placesmarkdown;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +23,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.barcode.Barcode;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks{
 
@@ -50,6 +59,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     marker.remove();
                 }
                 marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                try {
+                    List<Address> addresses= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                    if(addresses!=null&& addresses.size()>0){
+                        Intent i = new Intent();
+                        String taggie = addresses.get(0).getAddressLine(1);
+                        marker.setTitle(taggie);
+                        mMap.getMaxZoomLevel();
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude,latLng.longitude),17));
+                        i.putExtra("address",taggie);
+                        //startActivity(i);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

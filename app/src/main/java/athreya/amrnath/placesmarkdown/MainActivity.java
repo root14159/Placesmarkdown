@@ -20,17 +20,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.listView);
-        ArrayList<String> general = new ArrayList<String>();
+        final ArrayList<String> general = new ArrayList<String>();
         general.add("click to add place");
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_expandable_list_item_1,general);
-        listView.setAdapter(arrayAdapter);
+        Intent k = getIntent();
+        String dave =k.getStringExtra("address");
+        if(dave!=null){
+            general.add(dave);
+        }else {
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, general);
+            listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent j = new Intent(getApplicationContext(),MapsActivity.class);
-                startActivity(j);
-            }
-        });
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent j = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(j);
+
+
+                }
+            });
+        }
     }
 }
