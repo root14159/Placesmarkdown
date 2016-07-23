@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,6 +37,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest locationRequest;
     Marker marker;
     GoogleApiClient mGoogleApiClient;
+    LatLng refer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +61,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(marker!=null){
                     marker.remove();
                 }
+                refer = latLng;
                 marker = mMap.addMarker(new MarkerOptions().position(latLng));
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
                 try {
-                    List<Address> addresses= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                    if(mGoogleApiClient.isConnected()){
+                        List<Address> addresses= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
                     if(addresses!=null&& addresses.size()>0){
                         String taggie = addresses.get(0).getAddressLine(1);
                         marker.setTitle(taggie);
-                        mMap.getMaxZoomLevel();
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude,latLng.longitude),17));
-                        Intent j = new Intent(getApplicationContext(),MainActivity.class);
-                        j.putExtra("address",taggie);
-                        startActivity(j);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -84,6 +86,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(getApplicationContext(),"pause....",Toast.LENGTH_LONG).show();
+        Geocoder geocoder = new Geocoder(this,Locale.getDefault());
+        try {
+            List<Address> list = geocoder.getFromLocation(refer.latitude,refer.longitude,1);
+            Intent j = new Intent(getApplicationContext(),MainActivity.class);
+            j.putExtra("address",list.get(0).getAddressLine(1));
+            startActivity(j);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

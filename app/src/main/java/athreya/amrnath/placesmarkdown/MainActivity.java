@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         String dave =k.getStringExtra("address");
         if(dave!=null){
             text.setText(dave);
+            general.add(dave);
             dave = null;
         }
             //text.setText(dave);
