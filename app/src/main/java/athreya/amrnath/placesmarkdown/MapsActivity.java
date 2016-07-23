@@ -63,13 +63,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 try {
                     List<Address> addresses= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
                     if(addresses!=null&& addresses.size()>0){
-                        Intent i = new Intent();
                         String taggie = addresses.get(0).getAddressLine(1);
                         marker.setTitle(taggie);
                         mMap.getMaxZoomLevel();
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng.latitude,latLng.longitude),17));
-                        i.putExtra("address",taggie);
-                        //startActivity(i);
+                        Intent j = new Intent(getApplicationContext(),MainActivity.class);
+                        j.putExtra("address",taggie);
+                        startActivity(j);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

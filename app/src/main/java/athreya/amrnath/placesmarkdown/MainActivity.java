@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,15 +19,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        TextView text = (TextView)findViewById(R.id.textView);
         listView = (ListView) findViewById(R.id.listView);
         final ArrayList<String> general = new ArrayList<String>();
         general.add("click to add place");
         Intent k = getIntent();
         String dave =k.getStringExtra("address");
         if(dave!=null){
-            general.add(dave);
-        }else {
+            text.setText(dave);
+            dave = null;
+        }
+            //text.setText(dave);
             ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, general);
             listView.setAdapter(arrayAdapter);
 
@@ -39,6 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-        }
+
     }
 }
